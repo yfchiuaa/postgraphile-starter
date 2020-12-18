@@ -1,0 +1,37 @@
+version: "3.3"
+
+services:
+  db:
+    container_name: postgraphile-db
+    restart: always
+    image: postgraphile-db
+    build:
+      context: ./db
+    volumes:
+      - db:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    networks:
+      - network
+    ports:
+      - 5432:5432
+  api:
+    container_name: postgraphile
+    restart: always
+    image: postgraphile
+    build:
+      context: .
+    env_file:
+      - ./.env
+    networks:
+      - network
+    depends_on:
+      - db
+    ports:
+      - 5433:5433
+
+networks:
+  network:
+
+volumes:
+  db:
